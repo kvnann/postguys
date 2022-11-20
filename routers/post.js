@@ -13,7 +13,7 @@ const auth = require("../middleware/auth");
 const cors = require("cors");
 const e = require('express');
 const corsOptions ={
-    origin:'http://localhost:3000', 
+    origin:'https://postguys-demo.herokuapp.com', 
     credentials:true,
     optionSuccessStatus:200
 }

@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const _data = require("./lib/data");
 const config = require("./lib/config");
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 3001
 
 const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth");
