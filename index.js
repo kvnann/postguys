@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const _data = require("./lib/data");
 const config = require("./lib/config");
 
+const port = process.env.PORT || 5000
+
 const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth");
 
@@ -22,4 +24,4 @@ app.get('/',(req,res)=>{
     res.send("It is running :D");
 });
 
-app.listen(3001);
+app.listen(port);

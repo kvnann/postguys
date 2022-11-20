@@ -234,13 +234,16 @@ router.post('/search_users',(req,res)=>{
 });
 
 router.post("/follow",auth,(req,res)=>{
-    const user1 = req.body.user1;
-    const user2 = req.body.user2;
-    const state = req.body.state;
+    let user1 = req.body.user1;
+    let user2 = req.body.user2;
+    let state = req.body.state;
 
     if(user1 && user2){
         _data.readIdWithPass('users',user1,(err,user1Data)=>{
             if(!err && user1Data){
+                if(user1Data.follow.indexOf(user2)>-1){
+                    state = false
+                }
                 if(state){
                     if(!user1Data.follow.indexOf(user2)>-1){
                         user1Data.follow.push(user2);
@@ -251,6 +254,7 @@ router.post("/follow",auth,(req,res)=>{
                         user1Data.follow.splice(user1Data.follow.indexOf(user2),1);
                     }
                 }
+
                 _data.updateId('users',user1,user1Data,(err)=>{
                     if(!err){
                         _data.readIdWithPass('users',user2,(err,user2Data)=>{
@@ -258,6 +262,16 @@ router.post("/follow",auth,(req,res)=>{
                                 if(state){
                                     if(!user2Data.followers.indexOf(user1)>-1){
                                         user2Data.followers.push(user1);
+                                        let user2DataWithoutPass = JSON.parse(JSON.stringify(user2Data));
+                                        delete user2DataWithoutPass.password;
+                                        let notification = {
+                                            _id:`${Math.floor(Math.random()*1000000000+1)}`,
+                                            type:'follow',
+                                            followedBy:user2DataWithoutPass,
+                                            read:false
+                                        }
+                                        user2Data.notifications.splice(0,0,notification);
+                                        console.log(user2Data)
                                     }
                                 }
                                 else{
@@ -304,6 +318,8 @@ router.post("/follow",auth,(req,res)=>{
     }
 
 });
+
+
 
 
 router.post('/auth',auth,(req,res)=>{
