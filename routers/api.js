@@ -262,12 +262,12 @@ router.post("/follow",auth,(req,res)=>{
                                 if(state){
                                     if(!user2Data.followers.indexOf(user1)>-1){
                                         user2Data.followers.push(user1);
-                                        let user2DataWithoutPass = JSON.parse(JSON.stringify(user2Data));
-                                        delete user2DataWithoutPass.password;
+                                        let user1DataWithoutPass = JSON.parse(JSON.stringify(user1Data));
+                                        delete user1DataWithoutPass.password;
                                         let notification = {
                                             _id:`${Math.floor(Math.random()*1000000000+1)}`,
                                             type:'follow',
-                                            followedBy:user2DataWithoutPass,
+                                            followedBy:user1DataWithoutPass,
                                             read:false
                                         }
                                         user2Data.notifications.splice(0,0,notification);
