@@ -218,13 +218,19 @@ router.post('/logout',auth,(req,res)=>{
 router.post('/search_users',(req,res)=>{
     const keyword = req.body.keyword;
     if(keyword && keyword.length>0){
-        _data.read('users',keyword,(err,searchResult)=>{
-            if(!err && searchResult){
-                searchResult.password = typeof(searchResult.password) == 'string' ? searchResult.password : false;
-                if(searchResult.password){
-                    delete searchResult.password;
+        _data.search('users',keyword,(err,searchResults)=>{
+            if(!err && searchResults){
+                if(searchResults.length > 5){
+                    searchResults.splice(5,searchResults.length-5)
                 }
-                res.status(200).send(searchResult);
+                searchResults.forEach(searchResult => {
+                    searchResult.password = typeof(searchResult.password) == 'string' ? searchResult.password : false;
+                    if(searchResult.password){
+                        delete searchResult.password;
+                    }
+                });
+                console.log(searchResults)
+                res.status(200).send(searchResults);
             }
             else{
                 res.status(404).send("No user found :(");
@@ -232,6 +238,8 @@ router.post('/search_users',(req,res)=>{
         });
     }
 });
+
+
 
 router.post("/follow",auth,(req,res)=>{
     let user1 = req.body.user1;
