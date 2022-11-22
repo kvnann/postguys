@@ -15,8 +15,15 @@ const auth = require("../middleware/auth");
 var post = require("./post");
 
 const cors = require("cors");
+var whitelist = ['https://postguys-demo.herokuapp.com', 'http://localhost:3000']
 const corsOptions ={
-    origin:'https://postguys-demo.herokuapp.com', 
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+          callback(null, true)
+        } else {
+          callback(new Error('Not allowed by CORS'))
+        }
+      },
     credentials:true,
     optionSuccessStatus:200
 }
