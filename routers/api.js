@@ -18,11 +18,7 @@ const cors = require("cors");
 var whitelist = ['https://postguys-demo.herokuapp.com', 'http://localhost:3000']
 const corsOptions ={
     origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
-          callback(null, true)
-        } else {
-          callback(new Error('Not allowed by CORS'))
-        }
+          callback(null, true);
       },
     credentials:true,
     optionSuccessStatus:200
@@ -90,7 +86,7 @@ router.post('/login',cors(), (req,res)=>{
     }
 });
 
-router.post("/upload_files", upload.single("image"), (req,res)=>{
+ router.post("/upload_files", upload.single("image"), (req,res)=>{
     try{
         let filetype = req.file.mimetype.split('/')[1];
         const date = new Date();
@@ -150,6 +146,70 @@ router.post('/register',cors(),(req,res)=>{
             else{
                 res.status(200).send({
                     message: 'User Created!'
+                });
+            }
+        });
+    }
+    else{
+        res.status(400).send({
+            error: 'Wrong use of username or password. Please make valid ones!'
+        });
+    }
+}); 
+
+router.post('/edit_user',auth,(req,res)=>{
+    let username = req.body.username;
+    let userId = req.user.user_id
+    let date = new Date();
+    let imagename = req.body.imagename ? req.body.imagename : false;
+    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    username = typeof(username) == 'string' && username.trim().length > 0? username : false;
+    if(username  && userId){
+        _data.readIdWithPass('users',userId,(err,userData)=>{
+            if(!err && userData){
+                var oldUserData = JSON.parse(JSON.stringify(userData));
+                userData.edited = {
+                    data:new Date(),
+                    oldUsername:oldUserData.username,
+                    oldUsername:oldUserData.ppimage
+                };
+                userData.fileName = username;
+                userData.username = username;
+                userData.ppimage = imagename? imagename : userData.ppimage;
+                _data.updateId('users',userId,userData,(err)=>{
+                    if(err){
+                        res.status(500).send({
+                            error: "Couldn't edit user :("
+                         });
+                    }
+                    else{
+                        delete userData.password
+                        userData.posts.forEach(userPostId => {
+                            _data.readId('posts',userPostId,(err,postData)=>{
+                                if(!err && postData){
+                                    postData.user = userData;
+                                    _data.updateId('posts',userPostId,postData,(err)=>{
+                                        if(err){
+                                            console.log(`Couldn't update one post to edit, skipping it. ${userPostId}`);
+                                        }
+                                        else{
+                                            res.status(200).send({
+                                                message: 'User Edited!'
+                                            });
+                                        }
+                                    });
+                                }
+                                else{
+                                    console.log(`Couldn't read one post to edit, skipping it. ${userPostId}`);
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+            else{
+                res.status(500).send({
+                    error:"Couldn't find user, please try again later"
                 });
             }
         });

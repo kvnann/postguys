@@ -508,7 +508,7 @@ router.post("/send",auth,(req,res)=>{
                                                 owner:postData.user,
                                                 read:false
                                             }
-                                            toUser.notifications.push(notification);
+                                            toUser.notifications.slice(0,0,notification);
                                             _data.updateId('users',to,toUser,(err)=>{
                                                 if(!err){
                                                     res.status(200).send(
