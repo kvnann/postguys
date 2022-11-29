@@ -1,9 +1,18 @@
 var express = require('express');
 var app = express();
 const bodyParser = require('body-parser');
+const fs = require("fs");
+
+const http = require("http");
+const https = require("https");
 
 const _data = require("./lib/data");
 const config = require("./lib/config");
+
+var privateKey  = fs.readFileSync('./https/newkey.pem', 'utf8');
+var certificate = fs.readFileSync('./https/cert.pem', 'utf8');
+
+var credentials = {key: privateKey, cert: certificate};
 
 const port = process.env.PORT || 3001
 
@@ -24,4 +33,9 @@ app.get('/',(req,res)=>{
     res.send("It is running :D");
 });
 
-app.listen(port);
+
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+
+httpServer.listen(8080);
+httpsServer.listen(port);
