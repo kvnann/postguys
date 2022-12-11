@@ -13,7 +13,7 @@ const auth = require("../middleware/auth");
 const cors = require("cors");
 const e = require('express');
 const Api = require('twilio/lib/rest/Api');
-var whitelist = ['https://main.d2vq9ezjhsp9ls.amplifyapp.com', 'http://localhost:3000']
+var whitelist = ['https://main.d1oxwylk60q3oj.amplifyapp.com/login','https://postguys-334o.vercel.app/login', 'http://localhost:3000']
 const corsOptions ={
     origin: function (origin, callback) {
         if (whitelist.indexOf(origin) !== -1) {
