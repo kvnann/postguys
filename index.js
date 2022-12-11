@@ -29,12 +29,14 @@ app.use('/api',api);
 const path = require('path')
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
+console.log("Salam")
+
 app.get('/',(req,res)=>{
     res.send("It is running :D");
 });
 
 
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
+// var httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(port);
