@@ -15,7 +15,7 @@ const auth = require("../middleware/auth");
 var post = require("./post");
 
 const cors = require("cors");
-var whitelist = ['https://main.d1oxwylk60q3oj.amplifyapp.com/login','https://postguys-334o.vercel.app/login', 'http://localhost:3000']
+var whitelist = ['https://main.d1oxwylk60q3oj.amplifyapp.com','https://postguys-334o.vercel.app', 'http://localhost:3000']
 const corsOptions ={
     origin: function (origin, callback) {
         if (whitelist.indexOf(origin) !== -1) {
